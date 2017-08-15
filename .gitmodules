@@ -1,0 +1,16 @@
+[submodule "ibera-services"]
+	path = ibera-services
+	url = https://github.com/CatalystCode/ibera-services.git
+	branch = master
+[submodule "ibera-document-service"]
+	path = ibera-document-service
+	url = https://github.com/CatalystCode/ibera-document-service.git
+	branch = master
+[submodule "ibera-office-integration"]
+	path = ibera-office-integration
+	url = https://github.com/CatalystCode/ibera-office-integration.git
+	branch = master
+[submodule "ibera-smart-contracts"]
+	path = ibera-smart-contracts
+	url = https://github.com/CatalystCode/ibera-smart-contracts.git
+	branch = master
