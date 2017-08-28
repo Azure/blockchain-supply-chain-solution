@@ -23,6 +23,13 @@ coming soon ...
 * [Configure and run the core service](https://github.com/CatalystCode/ibera-services) - update the configuration as described in the README and run the service using `npm start`
 * [Configure and run the office integration service](https://github.com/CatalystCode/ibera-office-integration) - Follow the instructions in on `configuration` and `running in localhost`
 
+## Deploying the solution to Azure
+To deploy the solution, simply push the button
+
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
+
+
+
 
 
 
