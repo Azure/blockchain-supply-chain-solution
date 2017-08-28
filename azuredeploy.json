@@ -1,0 +1,1220 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentPreFix": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 6
+    },
+    "deploymentPostFix": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 6
+    },
+    "virtualMachine_username_t2": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 12
+    },
+    "virtualMachine_password_t2": {
+      "type": "securestring",
+      "minLength": 6,
+      "maxLength": 12
+    },
+    "virtualMachine_username_t2jumper": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 12
+    },
+    "virtualMachine_password_t2jumper": {
+      "type": "securestring",
+      "minLength": 6,
+      "maxLength": 12
+    },
+    "gitServicesRepoURL": {
+      "type": "string",
+      "defaultValue": "https://github.com/CatalystCode/ibera-services.git"
+    },
+    "gitServicesBranch": {
+      "type": "string",
+      "defaultValue": "master"
+    },
+
+    "gitOiRepoURL": {
+      "type": "string",
+      "defaultValue": "https://github.com/CatalystCode/ibera-office-integration.git"
+    },
+    "gitOiBranch": {
+      "type": "string",
+      "defaultValue": "master"
+    },
+
+    "gitDocumentServicesRepoURL": {
+      "type": "string",
+      "defaultValue": "https://github.com/CatalystCode/ibera-document-service.git"
+    },
+    "gitDocumentServicesBranch": {
+      "type": "string",
+      "defaultValue": "master"
+    }
+  },
+
+  "variables": {
+    "subscriptionid": "[subscription().subscriptionId]",
+    "location": "[resourceGroup().location]",
+    "service_name_api": "[concat(parameters('deploymentPreFix'),'api',parameters('deploymentPostFix'))]",
+    "disk_name_geth_rpc_jumper": "[concat(parameters('deploymentPreFix'),'gethrpcjumper',uniqueString(resourceGroup().id),parameters('deploymentPostFix'))]",
+    "virtualMachine_name_geth_rpc": "[concat(parameters('deploymentPreFix'),'gethrpc',parameters('deploymentPostFix'))]",
+    "virtualMachine_name_geth_rpc_jumper": "[concat(parameters('deploymentPreFix'),'gethrpcjumper',parameters('deploymentPostFix'))]",
+    "networkInterface_name_app_services_nic": "[concat(parameters('deploymentPreFix'),'app-services-nic',parameters('deploymentPostFix'))]",
+    "networkInterface_name_geth_rpc_jumper": "[concat(parameters('deploymentPreFix'),'geth-rpc-jumper',parameters('deploymentPostFix'))]",
+    "networkInterface_name_vm_nic": "[concat(parameters('deploymentPreFix'),'VMNic',parameters('deploymentPostFix'))]",
+    "networkSecurityGroup_name_geth_rpc": "[concat(parameters('deploymentPreFix'),'geth-rpc',parameters('deploymentPostFix'))]",
+    "networkSecurityGroup_name_geth_rpc_jumper_nsg": "[concat(parameters('deploymentPreFix'),'geth-rpc-jumper-nsg',parameters('deploymentPostFix'))]",
+    "publicIPAddress_name_app_services_vpn_ip": "[concat(parameters('deploymentPreFix'),'app-services-vpn-ip',parameters('deploymentPostFix'))]",
+    "publicIPAddress_name_geth_rpc_jumper_ip": "[concat(parameters('deploymentPreFix'),'geth-rpc-jumper-ip',parameters('deploymentPostFix'))]",
+    "publicIPAddress_name_public_ip": "[toLower(concat(parameters('deploymentPreFix'),'public-ip',parameters('deploymentPostFix')))]",
+    "virtualNetworks_name_api_vnet": "[concat(parameters('deploymentPreFix'),'api_vnet',parameters('deploymentPostFix'))]",
+    "virtualNetworks_name_app_services_vpn": "[concat(parameters('deploymentPreFix'),'app-services-vpn',parameters('deploymentPostFix'))]",
+    "virtualNetworks_name_WPVNET": "[concat(parameters('deploymentPreFix'),'WPVNET',parameters('deploymentPostFix'))]",
+    "networkInterface_name": "[toLower(concat(parameters('deploymentPreFix'),'storageaccount',parameters('deploymentPostFix')))]",
+    "storageAccount_name_keys": "[toLower(concat(parameters('deploymentPreFix'),'keys',parameters('deploymentPostFix')))]",
+    "storageAccount_name_diag803": "[toLower(concat(parameters('deploymentPreFix'),'diag803',parameters('deploymentPostFix')))]",
+    "site_name_api": "[concat(parameters('deploymentPreFix'),'api',parameters('deploymentPostFix'))]",
+    "site_name_oi": "[concat(parameters('deploymentPreFix'),'oi',parameters('deploymentPostFix'))]",
+    "site_name_document_service": "[concat(parameters('deploymentPreFix'),'document-service',parameters('deploymentPostFix'))]",
+    "extension_name_newuserscript": "[concat(parameters('deploymentPreFix'),'newuserscript',parameters('deploymentPostFix'))]",
+    "extension_name_enablevmaccess": "[concat(parameters('deploymentPreFix'),'enablevmaccess',parameters('deploymentPostFix'))]",
+    "config_web_api": "[concat(variables('site_name_api'),'/web')]",
+    "config_web_oi": "[concat(variables('site_name_oi'),'/web')]",
+    "config_web_document_service": "[concat(variables('site_name_document_service'),'/web')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service",
+      "sku": {
+        "name": "Developer",
+        "capacity": 1
+      },
+      "name": "[variables('service_name_api')]",
+      "apiVersion": "2016-07-07",
+      "location": "[variables('location')]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "publisherEmail": "cloudbeatsch@hotmail.com",
+        "publisherName": "ibera",
+        "provisioningState": "Succeeded",
+        "targetProvisioningState": "",
+        "runtimeUrl": "[concat('https://', variables('service_name_api'),'.azure-api.net')]",
+        "portalUrl": "[concat('https://', variables('service_name_api'),'.portal.azure-api.net')]",
+        "managementApiUrl": "[concat('https://', variables('service_name_api'),'.management.azure-api.net')]",
+        "scmUrl": "[concat('https://', variables('service_name_api'),'.scm.azure-api.net')]",
+        "hostnameConfigurations": [],
+        "staticIPs": [
+          "13.93.82.91"
+        ],
+        "additionalLocations": null,
+        "vpnconfiguration": {
+          "subnetResourceId": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_api_vnet')), '/subnets/default')]",
+          "location": "[variables('location')]"
+        },
+        "customProperties": null,
+        "vpnType": 1
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_api_vnet'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Compute/disks/iberat2jumper_OsDisk_1_207849c82acb4735afca03948ef21feb'.",
+      "type": "Microsoft.Compute/disks",
+      "name": "[variables('disk_name_geth_rpc_jumper')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "accountType": "Standard_LRS",
+        "osType": "Linux",
+        "creationData": {
+          "createOption": "FromImage",
+          "imageReference": {
+            "id": "[concat('/Subscriptions/',variables('subscriptionid'),'/Providers/Microsoft.Compute/Locations/',variables('location'),'/Publishers/Canonical/ArtifactTypes/VMImage/Offers/UbuntuServer/Skus/17.04/Versions/latest')]"
+          }
+        },
+        "diskSizeGB": 30
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Compute/virtualMachines/iberat2'.",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('virtualMachine_name_geth_rpc')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_A1"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "14.04.2-LTS",
+            "version": "latest"
+          },
+          "osDisk": {
+            "osType": "Linux",
+            "name": "osdisk1",
+            "createOption": "FromImage",
+            "vhd": {
+              "uri": "[concat('http', '://', variables('networkInterface_name'), '.blob.core.windows.net', '/vhds/osdisk1.vhd')]"
+            },
+            "caching": "ReadWrite"
+          },
+          "dataDisks": []
+        },
+        "osProfile": {
+          "computerName": "[variables('virtualMachine_name_geth_rpc')]",
+          "adminUsername": "[parameters('virtualMachine_username_t2')]",
+          "adminPassword": "[parameters('virtualMachine_password_t2')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": false
+          },
+          "secrets": []
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterface_name_vm_nic'))]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('networkInterface_name'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterface_name_vm_nic'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Compute/virtualMachines/iberat2jumper'.",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('virtualMachine_name_geth_rpc_jumper')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_A1"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "17.04",
+            "version": "latest"
+          },
+          "osDisk": {
+            "osType": "Linux",
+            "name": "[concat(variables('virtualMachine_name_geth_rpc_jumper'),'_',variables('disk_name_geth_rpc_jumper'))]",
+            "createOption": "FromImage",
+            "caching": "ReadWrite",
+            "diskSizeGB": 30
+          },
+          "dataDisks": []
+        },
+        "osProfile": {
+          "computerName": "[variables('virtualMachine_name_geth_rpc_jumper')]",
+          "adminUsername": "[parameters('virtualMachine_username_t2jumper')]",
+          "adminPassword": "[parameters('virtualMachine_password_t2jumper')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": false
+          },
+          "secrets": []
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterface_name_geth_rpc_jumper'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat('https', '://', variables('storageAccount_name_diag803'), '.blob.core.windows.net', '/')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/disks', variables('disk_name_geth_rpc_jumper'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterface_name_geth_rpc_jumper'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name_diag803'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/networkInterfaces/app-services-nic'.",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('networkInterface_name_app_services_nic')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAddress": "10.1.0.4",
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_app_services_vpn')), '/subnets/default')]"
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup_name_geth_rpc'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_app_services_vpn'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup_name_geth_rpc'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/networkInterfaces/iberat2jumper718'.",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('networkInterface_name_geth_rpc_jumper')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAddress": "10.0.0.5",
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddress_name_geth_rpc_jumper_ip'))]"
+              },
+              "subnet": {
+                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_WPVNET')), '/subnets/Subnet-1')]"
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup_name_geth_rpc_jumper_nsg'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddress_name_geth_rpc_jumper_ip'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_WPVNET'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup_name_geth_rpc_jumper_nsg'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/networkInterfaces/VMNic'.",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('networkInterface_name_vm_nic')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAddress": "10.0.0.4",
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddress_name_public_ip'))]"
+              },
+              "subnet": {
+                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_WPVNET')), '/subnets/Subnet-1')]"
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup_name_geth_rpc'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddress_name_public_ip'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_WPVNET'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup_name_geth_rpc'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/networkSecurityGroups/geth-rpc'.",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('networkSecurityGroup_name_geth_rpc')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "securityRules": [
+          {
+            "name": "ssh",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "[variables('networkSecurityGroup_name_geth_rpc')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "8545",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 110,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "[concat('outbound-', variables('networkSecurityGroup_name_geth_rpc'))]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Outbound"
+            }
+          }
+        ]
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/networkSecurityGroups/iberat2jumper-nsg'.",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('networkSecurityGroup_name_geth_rpc_jumper_nsg')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "securityRules": [
+          {
+            "name": "default-allow-ssh",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1000,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/publicIPAddresses/app-services-vpn-ip'.",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddress_name_app_services_vpn_ip')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "idleTimeoutInMinutes": 4
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/publicIPAddresses/iberat2jumper-ip'.",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddress_name_geth_rpc_jumper_ip')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "idleTimeoutInMinutes": 4
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/publicIPAddresses/publicIP'.",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddress_name_public_ip')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "idleTimeoutInMinutes": 4,
+        "dnsSettings": {
+          "domainNameLabel": "[variables('publicIPAddress_name_public_ip')]"
+        }
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/virtualNetworks/api-vnet'.",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworks_name_api_vnet')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.3.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.3.0.0/24"
+            }
+          }
+        ],
+        "virtualNetworkPeerings": [
+          {
+            "name": "geth-net",
+            "properties": {
+              "peeringState": "Connected",
+              "remoteVirtualNetwork": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_WPVNET'))]"
+              },
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_WPVNET'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/virtualNetworks/app-services-vpn'.",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworks_name_app_services_vpn')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.1.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.1.0.0/24",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup_name_geth_rpc'))]"
+              }
+            }
+          },
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "10.1.1.0/24"
+            }
+          }
+        ],
+        "virtualNetworkPeerings": [
+          {
+            "name": "geth-vpn",
+            "properties": {
+              "peeringState": "Connected",
+              "remoteVirtualNetwork": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_WPVNET'))]"
+              },
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": true,
+              "useRemoteGateways": false
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup_name_geth_rpc'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_WPVNET'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Network/virtualNetworks/WPVNET'.",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworks_name_WPVNET')]",
+      "apiVersion": "2017-03-01",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.0.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "Subnet-1",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24"
+            }
+          },
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "10.0.1.0/24"
+            }
+          }
+        ],
+        "virtualNetworkPeerings": [
+          {
+            "name": "api-peering",
+            "properties": {
+              "peeringState": "Connected",
+              "remoteVirtualNetwork": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_api_vnet'))]"
+              },
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": false
+            }
+          },
+          {
+            "name": "app-services",
+            "properties": {
+              "peeringState": "Connected",
+              "remoteVirtualNetwork": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_name_app_services_vpn'))]"
+              },
+              "allowVirtualNetworkAccess": true,
+              "allowForwardedTraffic": true,
+              "allowGatewayTransit": false,
+              "useRemoteGateways": true
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Storage/storageAccounts/iberat24ngn3gg4unfqa'.",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "Storage",
+      "name": "[variables('networkInterface_name')]",
+      "apiVersion": "2016-01-01",
+      "location": "[variables('location')]",
+      "tags": {},
+      "scale": null,
+      "properties": {},
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Storage/storageAccounts/iberat2keys'.",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "Storage",
+      "name": "[variables('storageAccount_name_keys')]",
+      "apiVersion": "2016-01-01",
+      "location": "[variables('location')]",
+      "tags": {},
+      "scale": null,
+      "properties": {},
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Storage/storageAccounts/iberatest2diag803'.",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "Storage",
+      "name": "[variables('storageAccount_name_diag803')]",
+      "apiVersion": "2016-01-01",
+      "location": "[variables('location')]",
+      "tags": {},
+      "scale": null,
+      "properties": {},
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Web/sites/ibera-api-t2'.",
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[variables('site_name_api')]",
+      "apiVersion": "2015-08-01",
+      "location": "[variables('location')]",
+      "tags": {
+        "[concat('hidden-related:/subscriptions/',variables('subscriptionid'),'/resourcegroups/Default-Web-WestEurope/providers/Microsoft.Web/serverfarms/Default1')]": "empty"
+
+      },
+      "scale": null,
+      "properties": {
+        "name": "[variables('site_name_api')]",
+        "hostNames": [
+          "[concat(variables('site_name_api'),'.azurewebsites.net')]"
+        ],
+        "enabledHostNames": [
+          "[concat(variables('site_name_api'),'.azurewebsites.net')]",
+          "[concat(variables('site_name_api'),'.scm.azurewebsites.net')]"
+        ],
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('site_name_api'),'.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          },
+          {
+            "name": "[concat(variables('site_name_api'),'.scm.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          }
+        ]
+      },
+      "dependsOn": [],
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "sourcecontrols",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('site_name_api'))]"
+          ],
+          "properties": {
+            "RepoUrl": "[parameters('gitServicesRepoURL')]",
+            "branch": "[parameters('gitServicesBranch')]",
+            "IsManualIntegration": false
+          }
+        }
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Web/sites/ibera-oi-t2'.",
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[variables('site_name_oi')]",
+      "apiVersion": "2015-08-01",
+      "location": "[variables('location')]",
+      "tags": {
+      },
+      "scale": null,
+      "properties": {
+        "name": "[variables('site_name_oi')]",
+        "hostNames": [
+          "[concat(variables('site_name_oi'),'.azurewebsites.net')]"
+        ],
+        "enabledHostNames": [
+          "[concat(variables('site_name_oi'),'.azurewebsites.net')]",
+          "[concat(variables('site_name_oi'),'.scm.azurewebsites.net')]"
+        ],
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('site_name_oi'),'.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          },
+          {
+            "name": "[concat(variables('site_name_oi'),'.scm.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          }
+        ]
+      },
+      "dependsOn": [],
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "sourcecontrols",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('site_name_oi'))]"
+          ],
+          "properties": {
+            "RepoUrl": "[parameters('gitOiRepoURL')]",
+            "branch": "[parameters('gitOiBranch')]",
+            "IsManualIntegration": false
+          }
+        }
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Web/sites/ibera-document-service'.",
+      "type": "Microsoft.Web/sites",
+      "kind": "WebApp",
+      "name": "[variables('site_name_document_service')]",
+      "apiVersion": "2015-08-01",
+      "location": "[variables('location')]",
+      "tags": {
+        "[concat('hidden-related:/subscriptions/',variables('subscriptionid'),'/resourcegroups/Default-Web-WestEurope/providers/Microsoft.Web/serverfarms/Default1')]": "empty"
+      },
+      "scale": null,
+      "properties": {
+        "name": "[variables('site_name_document_service')]",
+        "hostNames": [
+          "[concat(variables('site_name_document_service'),'.azurewebsites.net')]"
+        ],
+        "enabledHostNames": [
+          "[concat(variables('site_name_document_service'),'.azurewebsites.net')]",
+          "[concat(variables('site_name_document_service'),'.scm.azurewebsites.net')]"
+        ],
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('site_name_document_service'),'.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          },
+          {
+            "name": "[concat(variables('site_name_document_service'),'.scm.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          }
+        ]
+      },
+      "dependsOn": [],
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "sourcecontrols",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('site_name_document_service'))]"
+          ],
+          "properties": {
+            "RepoUrl": "[parameters('gitDocumentServicesRepoURL')]",
+            "branch": "[parameters('gitDocumentServicesBranch')]",
+            "IsManualIntegration": false
+          }
+        }
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Compute/virtualMachines/iberat2/extensions/newuserscript'.",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('virtualMachine_name_geth_rpc'),'/',variables('extension_name_newuserscript'))]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/go-ethereum-on-ubuntu/configure-geth.sh"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "./configure-geth.sh"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachine_name_geth_rpc'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Compute/virtualMachines/iberat2/extensions/enablevmaccess'.",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('virtualMachine_name_geth_rpc'),'/',variables('extension_name_enablevmaccess'))]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[variables('location')]",
+      "scale": null,
+      "properties": {
+        "publisher": "Microsoft.OSTCExtensions",
+        "type": "VMAccessForLinux",
+        "typeHandlerVersion": "1.4",
+        "autoUpgradeMinorVersion": true,
+        "settings": {},
+        "protectedSettings": {}
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachine_name_geth_rpc'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Web/sites/ibera-api-t2/config/web'.",
+      "type": "Microsoft.Web/sites/config",
+      "name": "[variables('config_web_api')]",
+      "apiVersion": "2015-08-01",
+      "location": "[variables('location')]",
+      "tags": {
+        "[concat('hidden-related:/subscriptions/',variables('subscriptionid'),'/resourcegroups/Default-Web-WestEurope/providers/Microsoft.Web/serverfarms/Default1')]": "empty"
+      },
+      "scale": null,
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php",
+          "hostingstart.html"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "phpVersion": "5.6",
+        "pythonVersion": "",
+        "nodeVersion": "",
+        "linuxFxVersion": "",
+        "requestTracingEnabled": false,
+        "remoteDebuggingEnabled": false,
+        "remoteDebuggingVersion": "VS2012",
+        "httpLoggingEnabled": false,
+        "logsDirectorySizeLimit": 35,
+        "detailedErrorLoggingEnabled": false,
+        "publishingUsername": "$ibera-api-t2",
+        "publishingPassword": null,
+        "appSettings": null,
+        "metadata": null,
+        "connectionStrings": null,
+        "machineKey": null,
+        "handlerMappings": null,
+        "documentRoot": null,
+        "scmType": "LocalGit",
+        "use32BitWorkerProcess": true,
+        "webSocketsEnabled": false,
+        "alwaysOn": false,
+        "javaVersion": null,
+        "javaContainer": null,
+        "javaContainerVersion": null,
+        "appCommandLine": "",
+        "managedPipelineMode": 0,
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": false,
+            "virtualDirectories": null
+          }
+        ],
+        "winAuthAdminState": 0,
+        "winAuthTenantState": 0,
+        "customAppPoolIdentityAdminState": true,
+        "customAppPoolIdentityTenantState": false,
+        "runtimeADUser": null,
+        "runtimeADUserPassword": null,
+        "loadBalancing": 1,
+        "routingRules": [],
+        "experiments": {
+          "rampUpRules": []
+        },
+        "limits": null,
+        "autoHealEnabled": false,
+        "autoHealRules": {
+          "triggers": null,
+          "actions": null
+        },
+        "tracingOptions": null,
+        "vnetName": "[variables('virtualNetworks_name_api_vnet')]",
+        "siteAuthEnabled": false,
+        "siteAuthSettings": {
+          "enabled": null,
+          "unauthenticatedClientAction": null,
+          "tokenStoreEnabled": null,
+          "allowedExternalRedirectUrls": null,
+          "defaultProvider": null,
+          "clientId": null,
+          "clientSecret": null,
+          "issuer": null,
+          "allowedAudiences": null,
+          "additionalLoginParams": null,
+          "isAadAutoProvisioned": false,
+          "googleClientId": null,
+          "googleClientSecret": null,
+          "googleOAuthScopes": null,
+          "facebookAppId": null,
+          "facebookAppSecret": null,
+          "facebookOAuthScopes": null,
+          "twitterConsumerKey": null,
+          "twitterConsumerSecret": null,
+          "microsoftAccountClientId": null,
+          "microsoftAccountClientSecret": null,
+          "microsoftAccountOAuthScopes": null
+        },
+        "cors": null,
+        "push": null,
+        "apiDefinition": null,
+        "autoSwapSlotName": null,
+        "localMySqlEnabled": false,
+        "ipSecurityRestrictions": null
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('site_name_api'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Web/sites/ibera-oi-t2/config/web'.",
+      "type": "Microsoft.Web/sites/config",
+      "name": "[variables('config_web_oi')]",
+      "apiVersion": "2015-08-01",
+      "location": "[variables('location')]",
+      "tags": {
+        "[concat('hidden-related:/subscriptions/',variables('subscriptionid'),'/resourcegroups/Default-Web-WestEurope/providers/Microsoft.Web/serverfarms/Default1')]": "empty"
+      },
+      "scale": null,
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php",
+          "hostingstart.html"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "phpVersion": "5.6",
+        "pythonVersion": "",
+        "nodeVersion": "",
+        "linuxFxVersion": "",
+        "requestTracingEnabled": false,
+        "remoteDebuggingEnabled": false,
+        "remoteDebuggingVersion": null,
+        "httpLoggingEnabled": false,
+        "logsDirectorySizeLimit": 35,
+        "detailedErrorLoggingEnabled": false,
+        "publishingUsername": "$ibera-oi-t2",
+        "publishingPassword": null,
+        "appSettings": null,
+        "metadata": null,
+        "connectionStrings": null,
+        "machineKey": null,
+        "handlerMappings": null,
+        "documentRoot": null,
+        "scmType": "None",
+        "use32BitWorkerProcess": true,
+        "webSocketsEnabled": false,
+        "alwaysOn": false,
+        "javaVersion": null,
+        "javaContainer": null,
+        "javaContainerVersion": null,
+        "appCommandLine": "",
+        "managedPipelineMode": 0,
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": false,
+            "virtualDirectories": null
+          }
+        ],
+        "winAuthAdminState": 0,
+        "winAuthTenantState": 0,
+        "customAppPoolIdentityAdminState": true,
+        "customAppPoolIdentityTenantState": false,
+        "runtimeADUser": null,
+        "runtimeADUserPassword": null,
+        "loadBalancing": 1,
+        "routingRules": [],
+        "experiments": {
+          "rampUpRules": []
+        },
+        "limits": null,
+        "autoHealEnabled": false,
+        "autoHealRules": null,
+        "tracingOptions": null,
+        "vnetName": "",
+        "siteAuthEnabled": false,
+        "siteAuthSettings": {
+          "enabled": null,
+          "unauthenticatedClientAction": null,
+          "tokenStoreEnabled": null,
+          "allowedExternalRedirectUrls": null,
+          "defaultProvider": null,
+          "clientId": null,
+          "clientSecret": null,
+          "issuer": null,
+          "allowedAudiences": null,
+          "additionalLoginParams": null,
+          "isAadAutoProvisioned": false,
+          "googleClientId": null,
+          "googleClientSecret": null,
+          "googleOAuthScopes": null,
+          "facebookAppId": null,
+          "facebookAppSecret": null,
+          "facebookOAuthScopes": null,
+          "twitterConsumerKey": null,
+          "twitterConsumerSecret": null,
+          "microsoftAccountClientId": null,
+          "microsoftAccountClientSecret": null,
+          "microsoftAccountOAuthScopes": null
+        },
+        "cors": null,
+        "push": null,
+        "apiDefinition": null,
+        "autoSwapSlotName": null,
+        "localMySqlEnabled": false,
+        "ipSecurityRestrictions": null
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('site_name_oi'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/f7760501-bcb4-4896-a9c9-bf3d131ab1fb/resourceGroups/ibera-test2/providers/Microsoft.Web/sites/ibera-document-service/config/web'.",
+      "type": "Microsoft.Web/sites/config",
+      "name": "[variables('config_web_document_service')]",
+      "apiVersion": "2015-08-01",
+      "location": "[variables('location')]",
+      "tags": {
+        "[concat('hidden-related:/subscriptions/',variables('subscriptionid'),'/resourcegroups/Default-Web-WestEurope/providers/Microsoft.Web/serverfarms/Default1')]": "empty"
+      },
+      "scale": null,
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php",
+          "hostingstart.html"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "phpVersion": "5.6",
+        "pythonVersion": "",
+        "nodeVersion": "",
+        "linuxFxVersion": "",
+        "requestTracingEnabled": false,
+        "remoteDebuggingEnabled": false,
+        "remoteDebuggingVersion": null,
+        "httpLoggingEnabled": false,
+        "logsDirectorySizeLimit": 35,
+        "detailedErrorLoggingEnabled": false,
+        "publishingUsername": "$ibera-document-service",
+        "publishingPassword": null,
+        "appSettings": null,
+        "metadata": null,
+        "connectionStrings": null,
+        "machineKey": null,
+        "handlerMappings": null,
+        "documentRoot": null,
+        "scmType": "None",
+        "use32BitWorkerProcess": true,
+        "webSocketsEnabled": false,
+        "alwaysOn": false,
+        "javaVersion": null,
+        "javaContainer": null,
+        "javaContainerVersion": null,
+        "appCommandLine": "",
+        "managedPipelineMode": 0,
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": false,
+            "virtualDirectories": null
+          }
+        ],
+        "winAuthAdminState": 0,
+        "winAuthTenantState": 0,
+        "customAppPoolIdentityAdminState": true,
+        "customAppPoolIdentityTenantState": false,
+        "runtimeADUser": null,
+        "runtimeADUserPassword": null,
+        "loadBalancing": 1,
+        "routingRules": [],
+        "experiments": {
+          "rampUpRules": []
+        },
+        "limits": null,
+        "autoHealEnabled": false,
+        "autoHealRules": null,
+        "tracingOptions": null,
+        "vnetName": "",
+        "siteAuthEnabled": false,
+        "siteAuthSettings": {
+          "enabled": null,
+          "unauthenticatedClientAction": null,
+          "tokenStoreEnabled": null,
+          "allowedExternalRedirectUrls": null,
+          "defaultProvider": null,
+          "clientId": null,
+          "clientSecret": null,
+          "issuer": null,
+          "allowedAudiences": null,
+          "additionalLoginParams": null,
+          "isAadAutoProvisioned": false,
+          "googleClientId": null,
+          "googleClientSecret": null,
+          "googleOAuthScopes": null,
+          "facebookAppId": null,
+          "facebookAppSecret": null,
+          "facebookOAuthScopes": null,
+          "twitterConsumerKey": null,
+          "twitterConsumerSecret": null,
+          "microsoftAccountClientId": null,
+          "microsoftAccountClientSecret": null,
+          "microsoftAccountOAuthScopes": null
+        },
+        "cors": null,
+        "push": null,
+        "apiDefinition": null,
+        "autoSwapSlotName": null,
+        "localMySqlEnabled": false,
+        "ipSecurityRestrictions": null
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('site_name_document_service'))]"
+      ]
+    }
+  ]
+}
