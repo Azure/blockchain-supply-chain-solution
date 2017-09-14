@@ -1,36 +1,33 @@
 {
-    "$schema":  "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion":  "1.0.0.0",
-    "parameters":  {
-                       "ethVnetName":  {
-                                           "value":  ""
-                                       },
-                       "deploymentPreFix":  {
-                                                "value":  ""
-                                            },
-                       "hostingEnvLocationName":  {
-                                                      "value":  ""
-                                                  },
-                       "gitServicesRepoURL":  {
-                                                  "value":  ""
-                                              },
-                       "gitServicesBranch":  {
-                                                 "value":  ""
-                                             },
-                       "gitOiRepoURL":  {
-                                            "value":  ""
-                                        },
-                       "gitOiBranch":  {
-                                           "value":  ""
-                                       },
-                       "servicesName":  {
-                                            "value":  ""
-                                        },
-                       "oiName":  {
-                                      "value":  ""
-                                  },
-                       "servicesStorageAccountName":  {
-                                                          "value":  ""
-                                                      }
-                   }
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentPreFix": {
+            "value": "ibr81"
+        },
+        "hostingEnvLocationName": {
+            "value": "West Europe"
+        },
+        "gitServicesRepoURL": {
+            "value": "https://github.com/CatalystCode/ibera-services.git"
+        },
+        "gitServicesBranch": {
+            "value": "master"
+        },
+        "gitOiRepoURL": {
+            "value": "https://github.com/CatalystCode/ibera-office-integration.git"
+        },
+        "gitOiBranch": {
+            "value": "master"
+        },
+        "servicesName": {
+            "value": "servicesapi"
+        },
+        "oiName": {
+            "value": "oiapi"
+        },
+        "servicesStorageAccountName": {
+            "value": "svcstorage"
+        }
+    }
 }

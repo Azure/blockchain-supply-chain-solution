@@ -15,40 +15,6 @@ $resourceGroupLocation = $conf["resourceGroupLocation"];
 $namePrefix = $conf["namePrefix"];
 $etheriumTxRpcPassword = $conf["ethereumAccountPsswd"];
 
-<#
-.SYNOPSIS
-    Registers RPs
-#>
-Function RegisterRP {
-    Param(
-        [string]$ResourceProviderNamespace
-    )
-
-    Write-Host "Registering resource provider '$ResourceProviderNamespace'";
-    Register-AzureRmResourceProvider -ProviderNamespace $ResourceProviderNamespace;
-}
-
-#******************************************************************************
-# Script body
-# Execution begins here
-#******************************************************************************
-
-# sign in
-Write-Host "Logging in...";
-Login-AzureRmAccount;
-
-# select subscription
-Write-Host "Selecting subscription '$subscriptionId'";
-Select-AzureRmSubscription -SubscriptionID $subscriptionId;
-
-# Register RPs
-$resourceProviders = @("microsoft.compute","microsoft.network","microsoft.storage","microsoft.web");
-if($resourceProviders.length) {
-    Write-Host "Registering resource providers"
-    foreach($resourceProvider in $resourceProviders) {
-        RegisterRP($resourceProvider);
-    }
-}
 
 #Create or check for existing resource group
 $resourceGroup = Get-AzureRmResourceGroup -Name $resourceGroupName -ErrorAction SilentlyContinue
@@ -92,8 +58,8 @@ Write-Host "ethVnetName = '$ethVnetName'";
 #Clone Smart Contracts repo and install it:
 $supplyChainPath = pwd;
 cd ..
-git clone $conf["gitSmartContractsRepoURL"]
-cd(Get-ChildItem -Directory . | sort CreationTime | select -l 1);
+git clone $conf["gitSmartContractsRepoURL"] $conf["gitSmartContractsFolder"];
+cd $conf["gitSmartContractsFolder"]
 npm install
 
 #Create public IP for the Etherium TX0 VM:
@@ -101,12 +67,13 @@ $pip = New-AzureRmPublicIpAddress -Name "tx0PublicIpAddress" -ResourceGroupName 
 $txNic = Get-AzureRmNetworkInterface -Name "nic-tx0" -ResourceGroupName $resourceGroupName;
 $txNic.IpConfigurations[0].PublicIpAddress = $pip;
 Set-AzureRmNetworkInterface -NetworkInterface $txNic;
-Write-Host "Created a new public IP address to the Ethereum TX0 VM: $pip.IpAddress";
+Write-Host "Created a new public IP address to the Ethereum TX0 VM";
 $ethRpcTx0Endpoint = "http://" + $pip.IpAddress + ":8545";
+Write-Host "ethRpcTx0Endpoint = $ethRpcTx0Endpoint";
 
 #Deploy the smart contract to the Etherium TX VM:
 $deployCommand = "node deploy ProofOfProduceQuality $ethRpcTx0Endpoint $etheriumTxRpcPassword"
-Write-Host "Deploying smart contracts using the following command: $deployResult";
+Write-Host "deploying command: $deployCommand"
 $deployResult = Invoke-Expression "$deployCommand 2>&1" 
 Write-Host $deployResult
 
