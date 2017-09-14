@@ -3,10 +3,10 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "ethVnetName":  {
-                                           "value":  "ibr54g4duvnet"
+                                           "value":  "ibr81thvlvnet"
                                        },
                        "deploymentPreFix":  {
-                                                "value":  "ibr54"
+                                                "value":  "ibr81"
                                             },
                        "hostingEnvLocationName":  {
                                                       "value":  "West Europe"

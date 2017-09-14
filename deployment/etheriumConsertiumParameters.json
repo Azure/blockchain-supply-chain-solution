@@ -3,7 +3,7 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "namePrefix":  {
-                                          "value":  "ibr54"
+                                          "value":  "ibr81"
                                       },
                        "adminUsername":  {
                                              "value":  "auser1"
