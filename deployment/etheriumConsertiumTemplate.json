@@ -1,7 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  
   "parameters": {
     "namePrefix": {
       "type": "string",
@@ -225,7 +224,7 @@
     "subnetPropertiesArray": [
       {
         "name": "[variables('txSubnetName')]",
-       "properties": {
+        "properties": {
           "addressPrefix": "[variables('txSubnetPrefix')]",
           "networkSecurityGroup": {
               "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('txNsgName'))]"
@@ -292,32 +291,6 @@
       "name": "[variables('availabilitySetName')]",
       "location": "[variables('location')]",
       "properties": {}
-    },
-    {
-      "apiVersion": "[variables('apiVersionDeployments')]",
-      "name": "loadBalancerLinkedTemplate",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('artifactsLocationURL'), '/nested/loadBalancer.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "loadBalancerName": {"value": "[variables('loadBalancerName')]"},
-          "dnsHostName":{"value": "[variables('namingInfix')]"},
-          "loadBalancerBackendAddressPoolName":{"value": "[variables('loadBalancerBackendAddressPoolName')]"},
-          "loadBalancerInboundNatRuleNamePrefix":{"value": "[variables('loadBalancerInboundNatRuleNamePrefix')]"},
-          "frontendPort1":{"value": "[variables('httpPort')]"},
-          "backendPort1":{"value": "[variables('adminSitePort')]"},
-          "frontendPort2":{"value": "[variables('gethRPCPort')]"},
-          "backendPort2":{"value": "[variables('gethRPCPort')]"},
-          "numInboundNATRules":{"value": "[parameters('numTXNodes')]"},
-          "inboundNATRuleFrontendStartingPort":{"value": "[variables('sshNATFrontEndStartingPort')]"},
-          "inboundNATRuleBackendPort":{"value": "[variables('sshPort')]"},
-          "location":{"value": "[variables('location')]"}
-        }
-      }
     },
     {
       "apiVersion": "[variables('apiVersionNetworkSecurityGroups')]",
@@ -390,13 +363,13 @@
               "description": "Allow etheradmin web service",
               "protocol": "*",
               "sourcePortRange": "*",
-             "destinationPortRange": "3000",
+              "destinationPortRange": "3000",
               "sourceAddressPrefix": "*",
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 102,
               "direction": "Inbound"
-           }
+            }
           },
           {
             "name": "block-bootnodes",
@@ -431,6 +404,37 @@
           ]
         },
         "subnets": "[take(variables('subnetPropertiesArray'), variables('numSubnets'))]"
+      }
+    },
+     {
+      "apiVersion": "[variables('apiVersionDeployments')]",
+      "name": "loadBalancerLinkedTemplate",
+      "type": "Microsoft.Resources/deployments",
+       "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('artifactsLocationURL'), '/nested/loadBalancer.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {"value": "[variables('virtualNetworkName')]"},
+          "subnetName":{"value": "[variables('txSubnetName')]"},
+          "loadBalancerName": {"value": "[variables('loadBalancerName')]"},
+          "loadBalancerBackendAddressPoolName":{"value": "[variables('loadBalancerBackendAddressPoolName')]"},
+          "loadBalancerInboundNatRuleNamePrefix":{"value": "[variables('loadBalancerInboundNatRuleNamePrefix')]"},
+          "frontendPort1":{"value": "[variables('httpPort')]"},
+          "backendPort1":{"value": "[variables('adminSitePort')]"},
+          "frontendPort2":{"value": "[variables('gethRPCPort')]"},
+          "backendPort2":{"value": "[variables('gethRPCPort')]"},
+          "numInboundNATRules":{"value": "[parameters('numTXNodes')]"},
+          "inboundNATRuleFrontendStartingPort":{"value": "[variables('sshNATFrontEndStartingPort')]"},
+          "inboundNATRuleBackendPort":{"value": "[variables('sshPort')]"},
+          "location":{"value": "[variables('location')]"}
+        }
       }
     },
     {
@@ -493,7 +497,7 @@
           "numMNNodes":{"value": "[variables('numMNNodes')]"},
           "mnNICPrefix":{"value": "[variables('mnNICPrefix')]"},
           "mnStorageAcctNames":{"value": "[variables('mnStorageAcctNames')]"},
-         "mnStorageAcctCount":{"value": "[variables('mnStorageAcctCount')]"},
+          "mnStorageAcctCount":{"value": "[variables('mnStorageAcctCount')]"},
           "mnSubnetRefArray":{"value": "[variables('mnSubnetRefArray')]"},
           "numConsortiumMembers":{"value": "[parameters('numConsortiumMembers')]"},
           "storageAccountType":{"value": "[variables('storageAccountType')]"},
@@ -522,7 +526,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-         "numBootNodes":{"value": "[parameters('numConsortiumMembers')]"},
+          "numBootNodes":{"value": "[parameters('numConsortiumMembers')]"},
           "txVMNamePrefix":{"value": "[variables('txVMNamePrefix')]"},
           "numTXNodes":{"value": "[parameters('numTXNodes')]"},
           "mnVMNamePrefix":{"value": "[variables('mnVMNamePrefix')]"},
@@ -543,15 +547,11 @@
   "outputs": {
     "admin-site": {
       "type": "string",
-      "value": "[concat('http://', reference('loadBalancerLinkedTemplate').outputs.fqdn.value)]"
+      "value": "http://10.0.10.4"
     },
     "ethereum-rpc-endpoint": {
       "type": "string",
-      "value": "[concat('http://', reference('loadBalancerLinkedTemplate').outputs.fqdn.value, ':', variables('gethRPCPort'))]"
-    },
-    "ssh-to-first-tx-node": {
-      "type": "string",
-      "value": "[concat('ssh -p ', variables('sshNATFrontEndStartingPort'), ' ', parameters('adminUsername'), '@', reference('loadBalancerLinkedTemplate').outputs.fqdn.value)]"
+      "value": "[concat('http://10.0.10.4:', variables('gethRPCPort'))]"
     }
   }
 }
