@@ -3,34 +3,34 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "ethVnetName":  {
-                                           "value":  "ibr81thvlvnet"
+                                           "value":  ""
                                        },
                        "deploymentPreFix":  {
-                                                "value":  "ibr81"
+                                                "value":  ""
                                             },
                        "hostingEnvLocationName":  {
-                                                      "value":  "West Europe"
+                                                      "value":  ""
                                                   },
                        "gitServicesRepoURL":  {
-                                                  "value":  "https://github.com/CatalystCode/ibera-services.git"
+                                                  "value":  ""
                                               },
                        "gitServicesBranch":  {
-                                                 "value":  "master"
+                                                 "value":  ""
                                              },
                        "gitOiRepoURL":  {
-                                            "value":  "https://github.com/CatalystCode/ibera-office-integration.git"
+                                            "value":  ""
                                         },
                        "gitOiBranch":  {
-                                           "value":  "master"
+                                           "value":  ""
                                        },
                        "servicesName":  {
-                                            "value":  "servicesapi"
+                                            "value":  ""
                                         },
                        "oiName":  {
-                                      "value":  "oiapi"
+                                      "value":  ""
                                   },
                        "servicesStorageAccountName":  {
-                                                          "value":  "svcstorage"
+                                                          "value":  ""
                                                       }
                    }
 }

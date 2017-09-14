@@ -3,19 +3,19 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "namePrefix":  {
-                                          "value":  "ibr81"
+                                          "value":  ""
                                       },
                        "adminUsername":  {
-                                             "value":  "auser1"
+                                             "value":  ""
                                          },
                        "adminPassword":  {
-                                             "value":  "AUser1234567"
+                                             "value":  ""
                                          },
                        "ethereumAccountPsswd":  {
-                                                    "value":  "AUser1234567"
+                                                    "value":  ""
                                                 },
                        "ethereumAccountPassphrase":  {
-                                                         "value":  "AUser1234567"
+                                                         "value":  ""
                                                      },
                        "ethereumNetworkID":  {
                                                  "value":  1010101
@@ -27,13 +27,13 @@
                                                        "value":  1
                                                    },
                        "mnNodeVMSize":  {
-                                            "value":  "Standard_D1_v2"
+                                            "value":  ""
                                         },
                        "numTXNodes":  {
                                           "value":  1
                                       },
                        "txNodeVMSize":  {
-                                            "value":  "Standard_D1_v2"
+                                            "value":  ""
                                         }
                    }
 }
