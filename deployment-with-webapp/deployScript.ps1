@@ -50,10 +50,7 @@ Write-Host "Starting Etherium deployment...";
 $etheriumConsertiumOutput = New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $etheriumConsertiumTemplateFilePath -TemplateParameterFile $etheriumConsertiumParametersFilePath;
 
 $ethRpcEndpoint = $etheriumConsertiumOutput.Outputs.'ethereum-rpc-endpoint'.value;
-$ethVnetName = (Get-AzureRmVirtualNetwork -ResourceGroupName $resourceGroupName).name;
-
 Write-Host "ethRpcEndpoint = '$ethRpcEndpoint'";
-Write-Host "ethVnetName = '$ethVnetName'";
 
 #Clone Smart Contracts repo and install it:
 $supplyChainPath = pwd;
