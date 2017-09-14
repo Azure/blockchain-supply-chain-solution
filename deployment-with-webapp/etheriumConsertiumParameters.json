@@ -1,0 +1,39 @@
+{
+    "$schema":  "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion":  "1.0.0.0",
+    "parameters":  {
+                       "namePrefix":  {
+                                          "value":  "ibr81"
+                                      },
+                       "adminUsername":  {
+                                             "value":  "auser1"
+                                         },
+                       "adminPassword":  {
+                                             "value":  "AUser1234567"
+                                         },
+                       "ethereumAccountPsswd":  {
+                                                    "value":  "AUser1234567"
+                                                },
+                       "ethereumAccountPassphrase":  {
+                                                         "value":  "AUser1234567"
+                                                     },
+                       "ethereumNetworkID":  {
+                                                 "value":  1010101
+                                             },
+                       "numConsortiumMembers":  {
+                                                    "value":  2
+                                                },
+                       "numMiningNodesPerMember":  {
+                                                       "value":  1
+                                                   },
+                       "mnNodeVMSize":  {
+                                            "value":  "Standard_D1_v2"
+                                        },
+                       "numTXNodes":  {
+                                          "value":  1
+                                      },
+                       "txNodeVMSize":  {
+                                            "value":  "Standard_D1_v2"
+                                        }
+                   }
+}
