@@ -157,7 +157,7 @@
   },
   "variables": {
     "location": "[resourceGroup().location]",
-    "artifactsLocationURL": "https://raw.githubusercontent.com/CatalystCode/ibera-ethereum-consortium-blockchain-network/master",
+    "artifactsLocationURL": "https://raw.githubusercontent.com/CatalystCode/ibera-supply-chain/master/deployment",
     "apiVersionDeployments": "2016-09-01",
     "apiVersionStorageAccounts": "2016-01-01",
     "apiVersionAvailabilitySets": "2016-03-30",
