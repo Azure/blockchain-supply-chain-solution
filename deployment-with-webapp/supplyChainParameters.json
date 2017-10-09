@@ -28,6 +28,9 @@
         },
         "servicesStorageAccountName": {
             "value": ""
+        },
+        "oiStorageAccountName": {
+            "value": ""
         }
     }
 }

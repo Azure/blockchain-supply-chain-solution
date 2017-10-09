@@ -4,7 +4,6 @@ $etheriumConsertiumTemplateFilePath = "etheriumConsertiumTemplate.json";
 $etheriumConsertiumParametersFilePath = "etheriumConsertiumParameters.json";
 $supplyChainTemplateFilePath = "supplyChainTemplate.json";
 $supplyChainParametersFilePath = "supplyChainParameters.json";
-$documentServicesEndPoint = 'https://ibera-document-service.azurewebsites.net';
 
 #Read the configuration file
 Get-Content $confFileName | foreach-object -begin {$conf=@{}} -process { $k = [regex]::split($_,'='); if(($k[0].CompareTo("") -ne 0) -and ($k[0].StartsWith("[") -ne $True)) { $conf.Add($k[0], $k[1]) } }
@@ -100,6 +99,7 @@ $supplyChainParameters.parameters.hostingEnvLocationName.value = $resourceGroupL
 $supplyChainParameters.parameters.servicesName.value = $conf["servicesName"];
 $supplyChainParameters.parameters.oiName.value = $conf["oiName"];
 $supplyChainParameters.parameters.servicesStorageAccountName.value = $conf["servicesStorageAccountName"];
+$supplyChainParameters.parameters.oiStorageAccountName.value = $conf["oiStorageAccountName"];
 $supplyChainParameters.parameters.gitServicesRepoURL.value = $conf["gitServicesRepoURL"];
 $supplyChainParameters.parameters.gitServicesBranch.value = $conf["gitServicesBranch"];
 $supplyChainParameters.parameters.gitOiRepoURL.value = $conf["gitOiRepoURL"];
@@ -126,11 +126,11 @@ $oiWebappEndpoint = 'https://'+(Get-AzureRmWebApp -Name $officeIntegrationWebapp
 Write-Host "servicesWebappEndpoint = '$servicesWebappEndpoint'";
 Write-Host "oiWebappEndpoint = '$oiWebappEndpoint'";
 
-#Getting storage account connection string:
-$storageName = $namePrefix + $conf["servicesStorageAccountName"];
-$storageKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $resourceGroupName -AccountName $storageName).Value[0];
-$storageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=' + $storageName + ';AccountKey=' + $storageKey + ';EndpointSuffix=core.windows.net';
-Write-Host "storageConnectionString = '$storageConnectionString'";
+#Getting Services storage account connection string:
+$storageNameServices = $namePrefix + $conf["servicesStorageAccountName"];
+$storageKeyServices = (Get-AzureRmStorageAccountKey -ResourceGroupName $resourceGroupName -AccountName $storageNameServices).Value[0];
+$storageConnectionStringServices = 'DefaultEndpointsProtocol=https;AccountName=' + $storageNameServices + ';AccountKey=' + $storageKeyServices + ';EndpointSuffix=core.windows.net';
+Write-Host "storageConnectionStringServices = '$storageConnectionStringServices'";
 
 #Setting Services webapp environment variables:
 $servicesWebapp = Get-AzureRMWebAppSlot -ResourceGroupName $resourceGroupName -Name $servicesWebappName -Slot production
@@ -145,7 +145,7 @@ $servicesWebappHash['ACCOUNT_ADDRESS'] = $accountAddress;
 $servicesWebappHash['ACCOUNT_PASSWORD'] = $etheriumTxRpcPassword;
 $servicesWebappHash['GAS'] = '2000';
 $servicesWebappHash['GET_RPC_ENDPOINT'] = $ethRpcEndpoint;
-$servicesWebappHash['AZURE_STORAGE_CONNECTION_STRING'] = $storageConnectionString;
+$servicesWebappHash['AZURE_STORAGE_CONNECTION_STRING'] = $storageConnectionStringServices;
 
 Set-AzureRMWebAppSlot -ResourceGroupName $resourceGroupName -Name $servicesWebappName -AppSettings $servicesWebappHash -Slot production
 
@@ -154,12 +154,18 @@ Set-AzureRMWebAppSlot -ResourceGroupName $resourceGroupName -Name $servicesWebap
 $oiWebapp = Get-AzureRMWebAppSlot -ResourceGroupName $resourceGroupName -Name $officeIntegrationWebappName -Slot production
 $oiWebappSettingList = $oiWebapp.SiteConfig.AppSettings
 
+#Getting OfficeIntegration storage account connection string:
+$storageNameOI = $namePrefix + $conf["oiStorageAccountName"];
+$storageKeyOI = (Get-AzureRmStorageAccountKey -ResourceGroupName $resourceGroupName -AccountName $storageNameOI).Value[0];
+$storageConnectionStringOI = 'DefaultEndpointsProtocol=https;AccountName=' + $storageNameOI + ';AccountKey=' + $storageKeyOI + ';EndpointSuffix=core.windows.net';
+Write-Host "storageConnectionStringOI = '$storageConnectionStringOI'";
+
 $oiWebappHash = @{}
 ForEach ($kvp in $oiWebappSettingList) {
     $oiWebappHash[$kvp.Name] = $kvp.Value
 }
 $oiWebappHash['IBERA_SERVICES_ENDPOINT'] = $servicesWebappEndpoint;
-$oiWebappHash['DOCUMENT_SERVICES_ENDPOINT'] = $documentServicesEndPoint;
 $oiWebappHash['OUTLOOK_SERVICE_ENDPOINT'] = $oiWebappEndpoint;
+$oiWebappHash['AZURE_OI_STORAGE_CONNECTION_STRING'] = $storageConnectionStringOI;
 
 Set-AzureRMWebAppSlot -ResourceGroupName $resourceGroupName -Name $officeIntegrationWebappName -AppSettings $oiWebappHash -Slot production
