@@ -166,6 +166,6 @@ ForEach ($kvp in $oiWebappSettingList) {
 }
 $oiWebappHash['IBERA_SERVICES_ENDPOINT'] = $servicesWebappEndpoint;
 $oiWebappHash['OUTLOOK_SERVICE_ENDPOINT'] = $oiWebappEndpoint;
-$oiWebappHash['AZURE_OI_STORAGE_CONNECTION_STRING'] = $storageConnectionStringOI;
+$oiWebappHash['STORAGE_CONNECTION_STRING'] = $storageConnectionStringOI;
 
 Set-AzureRMWebAppSlot -ResourceGroupName $resourceGroupName -Name $officeIntegrationWebappName -AppSettings $oiWebappHash -Slot production
