@@ -28,6 +28,13 @@ To deploy the solution, simply push the button
 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
+The following resources will be created:
+* Microsoft.ApiManagement
+* Microsoft.Compute
+* Microsoft.Network
+* Microsoft.Storage
+* Website
+
 
 
 
