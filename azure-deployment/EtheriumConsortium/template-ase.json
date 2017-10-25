@@ -153,11 +153,25 @@
       "metadata": {
         "description": "Size of the virtual machine for transaction nodes"
       }
+    },
+    "mainRepositoryLocation": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/CatalystCode/ibera-supply-chain/",
+      "metadata": {
+        "description": "The location of the main repository"
+      }
+    },
+    "mainRepositoryBranch": {
+      "type": "string",
+      "defaultValue": "master",
+      "metadata": {
+        "description": "The branch of the main repository"
+      }
     }
   },
   "variables": {
     "location": "[resourceGroup().location]",
-    "artifactsLocationURL": "https://raw.githubusercontent.com/CatalystCode/ibera-supply-chain/master/azure-deployment",
+    "artifactsLocationURL": "[concat(parameters('mainRepositoryLocation'), parameters('mainRepositoryBranch'), '/azure-deployment/EtheriumConsortium')]",
     "apiVersionDeployments": "2016-09-01",
     "apiVersionStorageAccounts": "2016-01-01",
     "apiVersionAvailabilitySets": "2016-03-30",

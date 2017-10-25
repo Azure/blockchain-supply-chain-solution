@@ -13,7 +13,7 @@ $deploymentEnvironmentType = $conf["deploymentType"];
 
 if(!($deploymentEnvironmentType -eq 'ase' -Or $deploymentEnvironmentType -eq 'webapp')){
 	Write-Host "deploymentType parameter (='$deploymentEnvironmentType') is not valid. Must be 'ase' for secured environment, or 'webapp' for unsecured environement";
-	exit;
+	exit 1;
 }
 
 #Set the files paths:
@@ -79,6 +79,7 @@ Set-Location $conf["gitSmartContractsFolder"]
 npm install
 
 #Create public IP for the Etherium TX0 VM:
+Write-Host "Creating a new public IP address to the Ethereum TX0 VM for public contract deployment purpose...";
 $pip = New-AzureRmPublicIpAddress -Name "tx0PublicIpAddress" -ResourceGroupName $resourceGroupName -AllocationMethod "Static" -Location $resourceGroupLocation;
 $txNic = Get-AzureRmNetworkInterface -Name "nic-tx0" -ResourceGroupName $resourceGroupName;
 $txNic.IpConfigurations[0].PublicIpAddress = $pip;
@@ -108,7 +109,7 @@ if($deploymentError){
 	Write-Host 'contractAddress= ' $contractAddress;
 }
 
-#Return to the original Supplu Chain project directory
+#Return to the original Supply Chain project directory
 Set-Location $supplyChainPath
 
 
@@ -125,7 +126,7 @@ $supplyChainParameters.parameters.gitServicesBranch.value = $conf["gitServicesBr
 $supplyChainParameters.parameters.gitOiRepoURL.value = $conf["gitOiRepoURL"];
 $supplyChainParameters.parameters.gitOiBranch.value = $conf["gitOiBranch"];
 
-if($deploymentEnvironmentType == 'ase'){
+if($deploymentEnvironmentType -eq 'ase'){
 	$supplyChainParameters.parameters.ethVnetName.value = $ethVnetName;
 }
 
