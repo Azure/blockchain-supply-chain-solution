@@ -1,20 +1,20 @@
 # Azure Deployment script
-PowerShell script for deploying ARM templates to create the Supply Cahin environment in Azure.
+PowerShell script for deploying ARM templates to create the Supply Chain solution in Azure.
 
 ## Pre Requisites
 To run the deployment script, please make sure you have the following pre-requisites:
-1.	PowerShell to run the script.
-2.	Node v8.4 or later.
-3.	Azure subscription.
+1.	PowerShell to run the script
+2.	Node v8.4 or later
+3.	Azure subscription
 
 ## Getting Started
 Before running the script open the `deploy.conf` file and set the script configuration values.
 Here is a brief description of the configuration values:
 
 ### [General]
-* `deploymentType`: This is the deployment type. I could be one of two types:
-    1.	WebApp: Use this option to deploy less secured environment. This option is used generally for development purposes.
-    2.	ASE: Use this option to deploy a secured environment with App Service Environment. Note: this option costs more that the WebApp option, but it’s strongly recommended for production environments.
+* `deploymentType`: This is the deployment type. It can be one of two types:
+    1.	WebApp: This is an environment for development and preview purposes. It is less secured and should not be used for production purposes.
+    2.	ASE: Use this option to deploy a secured environment with App Service Environment. Note: this option costs more than the WebApp option, but is recommended for production purposes.
 * `namePrefix`: The name prefix of all the resources created by this script, except the Network Interfaces and the Storage Accounts of the Ethereum Consortium resources.
 * `resourceGroupName`: The Resource Group name that will include all the created resources by this script.
 * `resourceGroupLocation`: The geographic location of the resource group. Please choose one of the locations listed [here](https://azure.microsoft.com/en-us/regions/)
@@ -24,7 +24,7 @@ Here is a brief description of the configuration values:
 * `mainRepositoryLocation`: The location URL where is the resources of the main repository (the Supply Chain umbrella) are available for download. Default value: `https://raw.githubusercontent.com/CatalystCode/ibera-supply-chain/`
 * `mainRepositoryBranch`: The used branch of the main repository. Default value: `master`
 
-### [Etherium Consertium]
+### [Etherium Consortium]
 * `adminUsername`: The user name used to access the VMs produced by this script. Default value: `auser1`
 * `adminPassword`: The password used to access the VMs produced by this script. Default value: `AUser1234567`
 * `ethereumAccountPsswd`: The password to access the Ethereum account. Default value: `AUser1234567`
@@ -47,7 +47,7 @@ Here is a brief description of the configuration values:
 * `gitOiBranch`: The used branch of the Office Integration repository. Default value: `master`
 
 ## Running the script
-To deploy the environment in Azure, make sure you have the pre-requisites listed in the beginning of this document, and make sure you set the needed deployment parameters in the `deploy.conf` file, and then follow these steps:
+To deploy the solution in Azure, make sure you have the pre-requisites listed in the beginning of this document, and make sure you set the required deployment parameters in the `deploy.conf` file, and then follow these steps:
 1.	Open PowerShell.
 
 2.	Login to Azure using the following command in the PowerShell command line:
@@ -71,3 +71,4 @@ To deploy the environment in Azure, make sure you have the pre-requisites listed
 
 After the deployment completed, login to your Azure account, and search for the Resource Group name you provided. You’ll find the resources under it.
 
+[Go back](https://github.com/CatalystCode/ibera-supply-chain) to the main repository.
