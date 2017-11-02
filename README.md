@@ -1,9 +1,5 @@
 # ibera-supply-chain
 
-## Deploying the solution to Azure
-To deploy the solution, simply push the button
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
-
 ## Overview
 This is the "umbrella" repository for iBera's blockchain supply-chain solution. The solution implements an end-to-end document and device data attestation scenario:
 * The [Office 365 outlook integration](https://github.com/CatalystCode/ibera-office-integration) supports archiving, retrieval and validations of attachments. 
@@ -27,10 +23,5 @@ git submodule foreach git checkout master
 * [Configure and run the core service](https://github.com/CatalystCode/ibera-services) - update the configuration as described in the README and run the service using `npm start`
 * [Configure and run the office integration service](https://github.com/CatalystCode/ibera-office-integration) - Follow the instructions in on `configuration` and `running in localhost`
 
-
-
-
-
-
-
-
+## Deploying the solution to Azure
+To deploy the solution to Azure, follow [these](https://github.com/CatalystCode/ibera-supply-chain/tree/master/azure-deployment) instructions.
