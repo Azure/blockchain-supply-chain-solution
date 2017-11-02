@@ -24,4 +24,4 @@ git submodule foreach git checkout master
 * [Configure and run the office integration service](https://github.com/CatalystCode/ibera-office-integration) - Follow the instructions in on `configuration` and `running in localhost`
 
 ## Deploying the solution to Azure
-To deploy the solution to Azure, follow [these](https://github.com/CatalystCode/ibera-supply-chain/tree/master/azure-deployment) instructions.
+To deploy the solution to Azure, follow [these](azure-deployment) instructions.
