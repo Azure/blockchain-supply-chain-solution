@@ -18,7 +18,6 @@ git submodule foreach git checkout master
 
 ## Getting started locally
 * [Build and deploy the smart contract to the block chain](https://github.com/Azure/supply-chain-smart-contracts/blob/master/README.md) - for local development you either use `testrpc` or a local `geth` instance.
-* [Configure and run the document service](https://github.com/Azure/supply-chain-document-service) 
 * [Configure and run the core service](https://github.com/Azure/supply-chain-services) - update the configuration as described in the README and run the service using `npm start`
 * [Configure and run the office integration service](https://github.com/Azure/supply-chain-office-integration) - Follow the instructions in on `configuration` and `running in localhost`
 
