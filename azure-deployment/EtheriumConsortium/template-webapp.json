@@ -156,7 +156,7 @@
     },
     "mainRepositoryLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/CatalystCode/ibera-supply-chain/",
+      "defaultValue": "https://raw.githubusercontent.com/Azure/blockchain-supply-chain-sloution/",
       "metadata": {
         "description": "The location of the main repository"
       }

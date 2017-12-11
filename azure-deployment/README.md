@@ -19,9 +19,9 @@ Here is a brief description of the configuration values:
 * `resourceGroupName`: The Resource Group name that will include all the created resources by this script.
 * `resourceGroupLocation`: The geographic location of the resource group. Please choose one of the locations listed [here](https://azure.microsoft.com/en-us/regions/)
 * `deploymentName`: The name of the deployment.
-* `gitSmartContractsRepoURL`: The Smart Contracts repository git URL. Default value: `https://raw.githubusercontent.com/CatalystCode/ibera-supply-chain/`
-* `gitSmartContractsFolder`: The folder name where the smart contracts repository will be cloned. Default value: `ibera-smart-contracts`
-* `mainRepositoryLocation`: The location URL where is the resources of the main repository (the Supply Chain umbrella) are available for download. Default value: `https://raw.githubusercontent.com/CatalystCode/ibera-supply-chain/`
+* `gitSmartContractsRepoURL`: The Smart Contracts repository git URL. Default value: `https://raw.githubusercontent.com/Azure/supply-chain-smart-contracts`
+* `gitSmartContractsFolder`: The folder name where the smart contracts repository will be cloned. Default value: `supply-chain-smart-contracts`
+* `mainRepositoryLocation`: The location URL where is the resources of the main repository (the Supply Chain umbrella) are available for download. Default value: `https://raw.githubusercontent.com/Azure/blockchain-supply-chain-sloution/`
 * `mainRepositoryBranch`: The used branch of the main repository. Default value: `master`
 
 ### [Etherium Consortium]
@@ -41,9 +41,9 @@ Here is a brief description of the configuration values:
 * `oiName`: The name of the Office Integration web app. Default value: `oiapi`
 * `servicesStorageAccountName`: The name of the storage account used by the Services web app. Default value: `svcstorage`
 * `oiStorageAccountName`: The name of the storage account used by the Office Integration web app. Default value: `oistorage`
-* `gitServicesRepoURL`: The Services repository git URL. Default value: `https://github.com/CatalystCode/ibera-services.git`
+* `gitServicesRepoURL`: The Services repository git URL. Default value: `https://github.com/Azure/supply-chain-services.git`
 * `gitServicesBranch`: The used branch of the Services repository. Default value: `master`
-* `gitOiRepoURL`: The Office Integration repository git URL. Default value: `https://github.com/CatalystCode/ibera-office-integration.git`
+* `gitOiRepoURL`: The Office Integration repository git URL. Default value: `https://github.com/Azure/supply-chain-office-integration.git`
 * `gitOiBranch`: The used branch of the Office Integration repository. Default value: `master`
 
 ## Running the script
@@ -71,4 +71,4 @@ To deploy the solution in Azure, make sure you have the pre-requisites listed in
 
 After the deployment completed, login to your Azure account, and search for the Resource Group name you provided. You’ll find the resources under it.
 
-[Go back](https://github.com/CatalystCode/ibera-supply-chain) to the main repository.
+[Go back](https://github.com/Azure/blockchain-supply-chain-sloution) to the main repository.

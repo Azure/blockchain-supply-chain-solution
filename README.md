@@ -1,10 +1,9 @@
-# ibera-supply-chain
+# blockchain-supply-chain
 
 ## Overview
-This is the "umbrella" repository for iBera's blockchain supply-chain solution. The solution implements an end-to-end document and device data attestation scenario:
-* The [Office 365 outlook integration](https://github.com/CatalystCode/ibera-office-integration) supports archiving, retrieval and validations of attachments. 
-* The [Core services](https://github.com/CatalystCode/ibera-services) provide an API to interact with the [Ethereum smart contract](https://github.com/CatalystCode/ibera-smart-contracts). This contract implements the persistency of a proof (such as a laboratory report of a produce). The core service [README.md](https://github.com/CatalystCode/ibera-services/blob/master/README.MD) explains the API in more detail. In addition to the interaction with the smart contract, the core services implement a key store which is used to encrypt the private parts of a proof. 
-* [Office 365 exchange document services](https://github.com/CatalystCode/ibera-document-service) interacts with O365 to retrieve email attachments and leverages blob storage to archive documents.
+This is the "umbrella" repository for blockchain supply-chain solution. The solution implements an end-to-end document and device data attestation scenario:
+* The [Office 365 outlook integration](https://github.com/Azure/supply-chain-office-integration) supports archiving, retrieval and validations of attachments. 
+* The [Core services](https://github.com/Azure/supply-chain-services) provide an API to interact with the [Ethereum smart contract](https://github.com/Azure/supply-chain-smart-contracts). This contract implements the persistency of a proof (such as a laboratory report of a produce). The core service [README.md](https://github.com/Azure/supply-chain-services/blob/master/README.MD) explains the API in more detail. In addition to the interaction with the smart contract, the core services implement a key store which is used to encrypt the private parts of a proof. 
 
 ## Architecture
 ![Architecture overview](./diagrams/architecture.jpg)
@@ -18,10 +17,10 @@ git submodule foreach git checkout master
 ```
 
 ## Getting started locally
-* [Build and deploy the smart contract to the block chain](https://github.com/CatalystCode/ibera-smart-contracts/blob/master/README.md) - for local development you either use `testrpc` or a local `geth` instance.
-* [Configure and run the document service](https://github.com/CatalystCode/ibera-document-service) 
-* [Configure and run the core service](https://github.com/CatalystCode/ibera-services) - update the configuration as described in the README and run the service using `npm start`
-* [Configure and run the office integration service](https://github.com/CatalystCode/ibera-office-integration) - Follow the instructions in on `configuration` and `running in localhost`
+* [Build and deploy the smart contract to the block chain](https://github.com/Azure/supply-chain-smart-contracts/blob/master/README.md) - for local development you either use `testrpc` or a local `geth` instance.
+* [Configure and run the document service](https://github.com/Azure/supply-chain-document-service) 
+* [Configure and run the core service](https://github.com/Azure/supply-chain-services) - update the configuration as described in the README and run the service using `npm start`
+* [Configure and run the office integration service](https://github.com/Azure/supply-chain-office-integration) - Follow the instructions in on `configuration` and `running in localhost`
 
 ## Deploying the solution to Azure
-To deploy the solution to Azure, follow [these](https://github.com/CatalystCode/ibera-supply-chain/tree/master/azure-deployment) instructions.
+To deploy the solution to Azure, follow [these](https://github.com/Azure/blockchain-supply-chain/tree/master/azure-deployment) instructions.

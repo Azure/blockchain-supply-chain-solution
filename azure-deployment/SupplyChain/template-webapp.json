@@ -10,7 +10,7 @@
       },
       "gitServicesRepoURL": {
         "type": "string",
-        "defaultValue": "https://github.com/CatalystCode/ibera-services.git"
+        "defaultValue": "https://github.com/Azure/supply-chain-services.git"
       },
       "gitServicesBranch": {
         "type": "string",
@@ -19,7 +19,7 @@
 
       "gitOiRepoURL": {
         "type": "string",
-        "defaultValue": "https://github.com/CatalystCode/ibera-office-integration.git"
+        "defaultValue": "https://github.com/Azure/supply-chain-office-integration.git"
       },
       "gitOiBranch": {
         "type": "string",
