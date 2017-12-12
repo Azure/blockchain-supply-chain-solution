@@ -22,4 +22,4 @@ git submodule foreach git checkout master
 * [Configure and run the office integration service](https://github.com/Azure/supply-chain-office-integration) - Follow the instructions in on `configuration` and `running in localhost`
 
 ## Deploying the solution to Azure
-To deploy the solution to Azure, follow [these](https://github.com/Azure/blockchain-supply-chain/tree/master/azure-deployment) instructions.
+To deploy the solution to Azure, follow [these](https://github.com/Azure/blockchain-supply-chain-solution/tree/master/azure-deployment) instructions.
