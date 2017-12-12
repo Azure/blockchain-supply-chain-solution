@@ -13,7 +13,7 @@
 		},
 		"gitServicesRepoURL": {
 			"type": "string",
-			"defaultValue": "https://github.com/CatalystCode/ibera-services.git"
+			"defaultValue": "https://github.com/Azure/supply-chain-services.git"
 		},
 		"gitServicesBranch": {
 		  "type": "string",
@@ -22,7 +22,7 @@
 
 		"gitOiRepoURL": {
 		  "type": "string",
-		  "defaultValue": "https://github.com/CatalystCode/ibera-office-integration.git"
+		  "defaultValue": "https://github.com/Azure/supply-chain-office-integration.git"
 		},
 		"gitOiBranch": {
 		  "type": "string",
@@ -327,7 +327,7 @@
                 "httpLoggingEnabled": false,
                 "logsDirectorySizeLimit": 35,
                 "detailedErrorLoggingEnabled": false,
-                "publishingUsername": "$iberaoiapi",
+                "publishingUsername": "$suppchainoiapi",
                 "publishingPassword": null,
                 "appSettings": null,
                 "metadata": null,
@@ -452,7 +452,7 @@
                 "httpLoggingEnabled": false,
                 "logsDirectorySizeLimit": 35,
                 "detailedErrorLoggingEnabled": false,
-                "publishingUsername": "$iberaservicesapi",
+                "publishingUsername": "$suppchainservicesapi",
                 "publishingPassword": null,
                 "appSettings": null,
                 "metadata": null,

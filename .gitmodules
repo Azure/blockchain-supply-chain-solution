@@ -1,16 +1,12 @@
-[submodule "ibera-services"]
-	path = ibera-services
-	url = https://github.com/CatalystCode/ibera-services.git
+[submodule "supply-chain-services"]
+	path = https://github.com/Azure/supply-chain-services
+	url = https://github.com/Azure/supply-chain-services.git
 	branch = master
-[submodule "ibera-document-service"]
-	path = ibera-document-service
-	url = https://github.com/CatalystCode/ibera-document-service.git
+[submodule "supply-chain-office-integration"]
+	path = https://github.com/Azure/supply-chain-office-integration
+	url = https://github.com/Azure/supply-chain-office-integration.git
 	branch = master
-[submodule "ibera-office-integration"]
-	path = ibera-office-integration
-	url = https://github.com/CatalystCode/ibera-office-integration.git
-	branch = master
-[submodule "ibera-smart-contracts"]
-	path = ibera-smart-contracts
-	url = https://github.com/CatalystCode/ibera-smart-contracts.git
+[submodule "supply-chain-smart-contracts"]
+	path = https://github.com/Azure/supply-chain-smart-contracts
+	url = https://github.com/Azure/supply-chain-smart-contracts.git
 	branch = master

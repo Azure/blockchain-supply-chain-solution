@@ -189,7 +189,7 @@ $oiWebappHash = @{}
 ForEach ($kvp in $oiWebappSettingList) {
     $oiWebappHash[$kvp.Name] = $kvp.Value
 }
-$oiWebappHash['IBERA_SERVICES_ENDPOINT'] = $servicesWebappEndpoint;
+$oiWebappHash['SUPPLY_CHAIN_SERVICES_ENDPOINT'] = $servicesWebappEndpoint;
 $oiWebappHash['OUTLOOK_SERVICE_ENDPOINT'] = $oiWebappEndpoint;
 $oiWebappHash['STORAGE_CONNECTION_STRING'] = $storageConnectionStringOI;
 
