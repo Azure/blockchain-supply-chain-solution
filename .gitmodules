@@ -1,0 +1,9 @@
+[submodule "supply-chain-smart-contracts"]
+	path = supply-chain-smart-contracts
+	url = https://github.com/Azure/supply-chain-smart-contracts
+[submodule "supply-chain-office-integration"]
+	path = supply-chain-office-integration
+	url = https://github.com/Azure/supply-chain-office-integration
+[submodule "supply-chain-services"]
+	path = supply-chain-services
+	url = https://github.com/Azure/supply-chain-services
