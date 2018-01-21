@@ -10,7 +10,8 @@ This is the "umbrella" repository for blockchain supply-chain solution. The solu
 
 ## Cloning the repo
 ```
-git clone
+git clone https://github.com/Azure/blockchain-supply-chain-solution.git
+cd blockchain-supply-chain-solution
 git submodule init 
 git submodule update --init --remote
 git submodule foreach git checkout master
@@ -22,4 +23,4 @@ git submodule foreach git checkout master
 * [Configure and run the office integration service](https://github.com/Azure/supply-chain-office-integration) - Follow the instructions in on `configuration` and `running in localhost`
 
 ## Deploying the solution to Azure
-To deploy the solution to Azure, follow [these](https://github.com/Azure/blockchain-supply-chain-solution/tree/master/azure-deployment) instructions.
+To deploy the solution to Azure, follw the 'Cloning the repo' steps above, and then follow [these](https://github.com/Azure/blockchain-supply-chain-solution/tree/master/azure-deployment) instructions.

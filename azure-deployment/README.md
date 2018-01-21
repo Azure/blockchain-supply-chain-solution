@@ -24,7 +24,7 @@ Here is a brief description of the configuration values:
 * `mainRepositoryLocation`: The location URL where is the resources of the main repository (the Supply Chain umbrella) are available for download. Default value: `https://raw.githubusercontent.com/Azure/blockchain-supply-chain-sloution/`
 * `mainRepositoryBranch`: The used branch of the main repository. Default value: `master`
 
-### [Etherium Consortium]
+### [Ethereum Consortium]
 * `adminUsername`: The user name used to access the VMs produced by this script. Default value: `auser1`
 * `adminPassword`: The password used to access the VMs produced by this script. Default value: `AUser1234567`
 * `ethereumAccountPsswd`: The password to access the Ethereum account. Default value: `AUser1234567`
